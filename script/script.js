@@ -125,8 +125,11 @@ newPassButton.addEventListener("click", function(){
     for(let i = 0; i<objPeople.length; i++){
         if(resUsername == objPeople[i].username && resEmail == objPeople[i].email && resAnswer == "4"){
             objPeople[i].password = newPassword
+            objPeople[i].banned = false
             console.log(objPeople)
             window.alert("Password changed")
+            changeForm.style.display = "none"
+            form.style.display = "block"
         }
 
     }
