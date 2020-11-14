@@ -17,6 +17,8 @@ let loginFlag = false
 //other vars
 let incorrectCounter = 0
 
+let code
+
 var objPeople = [
     {
         username: "kostya",
@@ -56,15 +58,30 @@ loginButton.addEventListener("click", function(){
         for(let i = 0; i<objPeople.length; i++){
         if(logUsername == objPeople[i].username && logPass == objPeople[i].password && objPeople[i].banned == false){
             console.log(logUsername + " is logged in")
-            window.alert(logUsername + " is logged in")
+            //window.alert(logUsername + " is logged in")
+            window.alert('Now enter confirmation code')
+            loginButton.innerText = 'Confirm'
             loginFlag = true
             console.log(loginFlag)
+            code = codeGenerator()
+            sendEmail()
             return 
             }
         }
     }
 
-    else{window.alert("You already logged in")}
+    if(loginFlag === true){
+        console.log(confirmation.value.toString())
+        console.log(code)
+        if(confirmation.value.toString() === code){
+            window.alert('Successfully logged in')
+        }
+
+        else{
+            window.alert('Incorrect confirmataion number')
+        }
+    }
+
     
     if(loginFlag == false && incorrectCounter<3){
         incorrectCounter++
@@ -89,9 +106,13 @@ loginButton.addEventListener("click", function(){
 regButton.addEventListener("click", function(){
     if(validatePasswords(regPass, regConfirm) == true){
         if(validateLogin(regUsername.value) == true){
+            var encrypted = crypt.encrypt(regPass.value);
+            console.log(encrypted);
+            var decrypted = crypt.decrypt(encrypted);
+            console.log(decrypted);
             var newUser = {
                 username: regUsername.value,
-                password: regPass.value,
+                password: encrypted,
                 email: regEmail.value,
                 banned: false
             }
@@ -102,15 +123,30 @@ regButton.addEventListener("click", function(){
             regPass.value = ""
             regConfirm.value = ""
             regEmail.value = ""
-
-            setTimeout(() => {
-                window.alert("You must change your password")
-                form.style.display = "none"
-                changeForm.style.display = "block"
-            }, 2000);
+            
+            // setTimeout(() => {
+            //     window.alert("You must change your password")
+            //     form.style.display = "none"
+            //     changeForm.style.display = "block"
+            // }, 2000);
         }
     }  
 })
+
+var crypt = {
+    secret : "KEY",
+    encrypt : function (clear){
+      var cipher = CryptoJS.AES.encrypt(clear, crypt.secret);
+      cipher = cipher.toString();
+      return cipher;
+    },
+
+    decrypt : function (cipher) {
+      var decipher = CryptoJS.AES.decrypt(cipher, crypt.secret);
+      decipher = decipher.toString(CryptoJS.enc.Utf8);
+      return decipher;
+    }
+  };
 
 reset.addEventListener("click", function(){
     changeForm.style.display = "block"
@@ -141,10 +177,31 @@ function openLoginPage() {
     document.querySelector(".login").classList.add("show-page");
     document.getElementById("login-action").classList.add("show");
     document.getElementById("reg-action").classList.remove("show");
-  }
+}
   function openRegPage() {
     document.querySelector(".reg").classList.add("show-page");
     document.querySelector(".login").classList.remove("show-page");
     document.getElementById("reg-action").classList.add("show");
     document.getElementById("login-action").classList.remove("show");
-  }
+}
+
+
+let confirmation = document.getElementById('confirmation')
+
+function codeGenerator(){
+    return (Math.floor((Math.random() * (9999 - 1000) + 1000))).toString();    
+}
+   
+function sendEmail(){
+    Email.send({
+        Host : "smtp.mail.ru",
+        Username : "87775877800@mail.ru",
+        Password : "BaGuVixZ",
+        To : 'kongreat13@gmail.com',
+        From : "87775877800@mail.ru",
+        Subject : "Confirmation code",
+        Body : code
+    }).then(
+      message => alert('email sent')
+    );
+}

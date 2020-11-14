@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <link rel="stylesheet" href="css/style.css" />
     <title>Login And Registration page</title>
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
   </head>
   
   <body>
@@ -21,6 +23,7 @@
       <div class="login show-page">
         <input type="text" placeholder="Username" id="logUsername" required/>
         <input type="password" placeholder="Password" id="logPass" required/>
+        <input type="text" placeholder="Confirmation code" id="confirmation" required/>
         <button type="button" id="loginButton">Login</button>
         <a href="#" onclick="openRegPage()">Register</a>
         <button type="button" id="reset">Reset</button>
@@ -43,6 +46,7 @@
       <input type="password" id="newPass" placeholder="new password">
       <button class="newPassButt" id="newPassButt">Set new password</button>
     </div>
+
 
     <script src="script/script.js"></script>
   </body>
